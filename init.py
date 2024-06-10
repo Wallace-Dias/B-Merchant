@@ -1,13 +1,13 @@
-from random import choice
+from random import choice, randint
 from time import sleep
 print('='*50)
 print("B-Merchant".center(50))
 print('='*50)
 
-gold = 0
+gold = 100
 player = []
 itens = []
-loja = ['Maçã', 'galho', 'Poção']
+loja = {'Maçã': randint(1, 100), 'galho': randint(1, 100), 'Poção': randint(1,100)}
 #print(choice(itens))
 
 print(f"Bem vindo Mercador! Voce tem atualmente {gold} de Gold\n O que gostaria de fazer?\n")
@@ -44,7 +44,7 @@ while True:
                 cont +=1
                 if cont == len(loja):
                     buy = int(input("Buy: "))
-                    if 1 <= buy <= len(loja):
+                    if 1 <= buy <= len(loja):#and gold <= loja.values() :
                         item_comprado = loja[buy - 1]
                         itens.append(item_comprado)
                         loja.remove(item_comprado)
