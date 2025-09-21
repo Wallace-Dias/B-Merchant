@@ -15,7 +15,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=pos)
         self.speed = 300
     
-    def update (self, dt, keys, screen):
+    def update (self, dt, keys, screen, chao):
         #Movimento
 
         if keys[pygame.K_w]:
@@ -40,7 +40,19 @@ class Player(pygame.sprite.Sprite):
         if self.rect.bottom > screen.get_height():
             self.rect.bottom = screen.get_height()
 
+        
+        if self.rect.colliderect(chao.rect):
+            self.rect.bottom = chao.rect.top
 
+
+class Chao (pygame.sprite.Sprite):
+    def __init__(self, width, height, screen_width, screen_height):
+        super().__init__()
+
+        self.image = pygame.Surface((screen_width, height))
+        self.image.fill((100, 50, 0)) # cor do chão
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (0, screen_height - height)
 
 
 
@@ -53,7 +65,7 @@ pygame.init()  # Inicializa todos os módulos do pygame
 screen = pygame.display.set_mode((720, 640)) # Cria a janela do jogo com largura=720 e altura=640
 pygame.display.set_caption("B-Merchant")
 
-chao_rect = pygame.Rect(0, screen.get_height() - 50, screen.get_width(), 50)
+
 clock = pygame.time.Clock()  # Cria um relógio para controlar o FPS (frames por segundo)
 running = True # Variável que controla o loop principal
 dt = 0
@@ -61,7 +73,11 @@ dt = 0
 
 #Criar grupo de sprites
 player = Player((screen.get_width() / 2, screen.get_height() / 2))
-all_sprites = pygame.sprite.Group(player)
+chao = Chao(0, 50, screen.get_width(), screen.get_height()) #Altura do chão = 50
+all_sprites = pygame.sprite.Group()
+all_sprites.add(chao)
+all_sprites.add(player)
+
 icone = pygame.image.load('money.png')
 background = pygame.image.load('Background.png')
 background = pygame.transform.scale(background, (screen.get_width(), screen.get_height()))
@@ -83,20 +99,8 @@ while running:
 
     #Mapeamento das teclas
     keys = pygame.key.get_pressed()
-    all_sprites.update(dt, keys, screen)
-
-
-
+    all_sprites.update(dt, keys, screen, chao)
     
-
-    #Mapa
-
-    #Chão
-    pygame.draw.rect(screen, (100, 50, 0), chao_rect)
-
-    if player.rect.bottom > chao_rect.top:
-        player.rect.bottom = chao_rect.top
-
 
     
 
